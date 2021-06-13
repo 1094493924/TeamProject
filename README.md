@@ -3,9 +3,13 @@
 
 ### 环境
 Python
+
 TensorFlow 1.3以上
+
 numpy
+
 scikit-learn
+
 scipy
 
 ### 数据集
