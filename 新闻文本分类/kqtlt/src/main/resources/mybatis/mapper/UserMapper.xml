@@ -1,0 +1,12 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kqtlt.mapper.UserDao">
+    <insert id="insertOneUser" parameterType="com.kqtlt.entity.User">
+        INSERT INTO `news`.`user` (`user_name`,`password`,`num`) VALUES (#{userName},#{password},#{num});
+    </insert>
+
+    <select id="selectOneUserByNum" parameterType="string" resultType="com.kqtlt.entity.User">
+        SELECT * FROM `news`.`user` WHERE num=#{num}
+    </select>
+</mapper>

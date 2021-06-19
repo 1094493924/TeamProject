@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>登录</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script th:src="@{/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        .content{
+            width:902px;
+            height: 301px;
+            margin: 180px auto;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+        }
+        .content-item{
+            height: 300px;
+            width: 300px;
+            display: inline-block;
+            float: left;
+            background-color: #F6F6F6;
+        }
+        .title{
+            height:20px;
+            font-weight: lighter;
+            font-size: 18px;
+            margin: 20px 20px 0px 20px;
+            text-align: center;
+            display: inline-block;
+            width: 280px;
+            padding-top: 25px;
+        }
+        .layui-form-item{
+            margin: 20px;
+        }
+    </style>
+
+</head>
+<body style="background-image: url(image/bg.jpg);">
+    <div class="content">
+        <div class="content-item">
+            <img th:src="@{/image/left.png}"/>
+        </div>
+        <div class="content-item">
+            <div class="title">登录</div>
+            <div class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" autocomplete="off" placeholder="请输入学号" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit lay-filter="onSubmit" style="width: 30%;margin-left: 20%;">登录</button>
+                    <button type="reset" class="layui-btn layui-btn-danger" style="width: 30%;">重置</button>
+                </div>
+            </div>
+        </div>
+        <div class="content-item">
+            <img th:src="@{/image/right.png}"/>
+        </div>
+    </div>
+</body>
+    <script>
+        layui.use(['form', 'layer'], function() {
+            var form = layui.form;
+            var layer = layui.layer;
+            var $=layui.jquery;
+            //监听提交
+            form.on('submit(onSubmit)', function(data) {
+                if (data.field.name==""){
+                    layer.msg("学号不能为空",{icon:5});
+                    return false;
+                }
+                if (data.field.password==""){
+                    layer.msg("密码不能为空",{icon:5});
+                    return false;
+                }
+                var req={};
+                req.id=data.field.name;
+                req.password=data.field.password;
+                $.ajax({
+                    url:'/require/login',
+                    data:JSON.stringify(req),
+                    contentType:'application/json;charset=UTF-8',
+                    type:'post',
+                    dataType: "json",
+                    success:function(res) {
+                        if (res.code==0){
+                            layer.msg(res.data,{icon:6})
+                            location.href="/";
+                        }else{
+                            layer.msg(res.data,{icon:0});
+                            return false;
+                        }
+                    },
+                    error:function (){
+                        layer.msg("浏览器出错了",{icon:0});
+                        return false;
+                    }
+                })
+            });
+        });
+    </script>
+</html>

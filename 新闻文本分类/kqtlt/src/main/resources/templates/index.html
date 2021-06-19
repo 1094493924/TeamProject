@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>首页</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script th:src="@{/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        .top-button{
+            background-color: #DDDDDD;
+            border-radius: 8px;
+            margin: 10px 10%;
+            font-size: 16px;
+            color: #000000;
+            font-weight: lighter;
+        }
+        .top-button:hover{
+            border: 1px solid #FFB800;
+            font-size: 16px;
+            font-weight: lighter;
+            color: #000000;
+        }
+        .login-button{
+            margin-top: 10px;
+        }
+        .carousel-img{
+            display: flex;
+            width: 100%;
+            height: 400px;
+        }
+        .entrance{
+            width: 100%;
+            height: 240px;
+            /* border: 1px solid red; */
+            background-color: #fcfcfc;
+        }
+        .entrance-item{
+            width: 20%;
+            height: 180px;
+            display: inline-block;
+            margin: 27px;
+            border-radius: 10px;
+            box-shadow:0 5px 20px #C0C0C0;
+            z-index: 1;
+            background-color: #f5fbfc;
+            transition: 1s linear;
+        }
+        .entrance-item:hover{
+            background-color: #009E94;
+        }
+        .entrance-item-img{
+            display: flex;
+            width: 100px;
+            height: 100px;
+            border-radius: 100px;
+            text-align: center;
+            margin: 10px auto;
+        }
+        .entrance-item-font{
+            font-size: 18px;
+            font-weight: lighter;
+            text-align: center;
+            color: #FF5722;
+        }
+        .footer{
+            width: 100%;
+            height:150px;
+            background-color: #EEEEEE;
+            border: 1px solid #EEEEEE;
+        }
+        .footer-item-title{
+            margin: 20px auto;
+            font-size: 18px;
+            font-weight: lighter;
+            display: block;
+            width: 100%;
+            height: 30px;
+            text-align: center;
+        }
+        .footer-item-content{
+            font-weight: lighter;
+            font-size: 14px;
+            margin: 5px auto;
+            display: block;
+            width: 100%;
+            height: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-header">
+    <div class="layui-row" style="background-color: white;height: 60px;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+        <div class="layui-col-md5">
+            <img th:src="@{/image/logo.png}" style="width: 280px;height: 40px;display: flex;margin-top:10px ;margin-left: 35%;"/>
+        </div>
+        <div class="layui-col-md4">
+            <button type="button" class="layui-btn top-button" th:onclick="onFirst()">首&nbsp;&nbsp;&nbsp;&nbsp;页</button>
+            <button type="button" class="layui-btn top-button" th:onclick="contactUs()">联系我们</button>
+        </div>
+        <div class="layui-col-md3">
+            <button type="button" class="layui-btn layui-btn-normal login-button" th:onclick="loginIn()"
+                    th:if="${session.loginUser==null}">登录</button>
+            <button type="button" class="layui-btn layui-btn-normal login-button" th:onclick="loginOut()"
+                    th:if="${session.loginUser!=null}">注销</button>
+        </div>
+    </div>
+</div>
+<div class="layui-container">
+    <div class="layui-carousel" id="carousel">
+        <div carousel-item>
+            <div><img th:src="@{/image/carouse1.jpg}" class="carousel-img"/></div>
+            <div><img th:src="@{/image/carouse2.jpg}" class="carousel-img"/></div>
+            <div><img th:src="@{/image/carouse3.jpg}" class="carousel-img"/></div>
+            <div><img th:src="@{/image/carouse4.jpg}" class="carousel-img"/></div>
+            <div><img th:src="@{/image/carouse5.jpg}" class="carousel-img"/></div>
+        </div>
+    </div>
+    <div class="entrance">
+        <div class="entrance-item" th:onclick="onExperience()">
+            <img th:src="@{/image/entrance-img1.jpg}" class="entrance-item-img">
+            <div class="entrance-item-font">朕要体验</div>
+        </div>
+        <div class="entrance-item" th:onclick="onComplaint()">
+            <img th:src="@{/image/entrance-img2.jpg}" class="entrance-item-img">
+            <div class="entrance-item-font">朕要投诉</div>
+        </div>
+        <div class="entrance-item" th:onclick="onAboutUs()">
+            <img th:src="@{/image/entrance-img3.jpg}" class="entrance-item-img">
+            <div class="entrance-item-font">关于我们</div>
+        </div>
+        <div class="entrance-item" th:onclick="onUseIntroduce()">
+            <img th:src="@{/image/entrance-img4.jpg}" class="entrance-item-img">
+            <div class="entrance-item-font">使用说明</div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="footer-item-title">新闻文本分类网站</div>
+    <div class="footer-item-content">版权所有&copy;本系统最终解释权归卡其脱离太项目组所有</div>
+    <div class="footer-item-content">
+        地址：兰州市安宁东路976号
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        邮编：730070
+    </div>
+</div>
+</body>
+<script>
+    var layer;
+    layui.use(['layer','carousel'], function(){
+        layer= layui.layer;
+        var carousel = layui.carousel;
+        carousel.render({
+            elem:'#carousel',
+            width:'100%',
+            height:'400px',
+            arrow: 'always' //始终显示箭头
+        });
+    });
+    function onFirst(){
+        location.href="/";
+    };
+    function contactUs(){
+        layer.alert('详情请致电173&nbsp;&nbsp;3991&nbsp;&nbsp;6825',{icon:6});
+    };
+    function onExperience(){
+        location.href="/single";
+    };
+    function onComplaint(){
+        layer.prompt({title: '请输入意见', formType: 2}, function(text, index){
+            layer.close(index);
+            layer.msg('您的意见我们会尽快返回给工程师', {time: 3000, icon:6});
+        });
+    };
+    function onAboutUs(){
+        layer.alert('请参考博客园https://www.cnblogs.com/kaqituolitai/', {
+            time: 5*1000,
+            success: function(layero, index){
+                var timeNum = this.time/1000, setText = function(start){
+                    layer.title('关于我们', index);
+                };
+                setText(!0);
+                this.timer = setInterval(setText, 1000);
+                if(timeNum <= 0) clearInterval(this.timer);
+            },
+            end: function(){
+                clearInterval(this.timer);
+            }
+        });
+    };
+    function onUseIntroduce(){
+        layer.msg("本系统功能较为完善，直接使用即可",{icon:6})
+    };
+    function loginIn(){
+        location.href='/login';
+    };
+    function loginOut(){
+        location.href='/login/out';
+    };
+</script>
+</html>

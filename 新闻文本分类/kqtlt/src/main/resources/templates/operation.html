@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>操作记录</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script th:src="@{/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        .content {
+            margin: 20px;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            text-align: center;
+            background-color: white;
+            font-size: 18px;
+            font-weight: lighter;
+            min-height: 300px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div th:insert="~{single::top}"></div>
+    <div th:insert="~{single::left}"></div>
+    <div class="layui-body" style="background-color:#F7F7F7">
+        <div class="content">
+            <div class="title">
+                操作记录显示
+            </div>
+            <table id="show-result" lay-filter="result-analysis"></table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['layer', 'table'], function() {
+        layer = layui.layer;
+        var $ = layui.jquery;
+        var table = layui.table;
+
+        table.render({
+            elem: '#show-result',
+            height: 'full-20',
+            url: '/operation/all', //数据接口
+            page: true, //开启分页
+            cols: [
+                [{
+                    field: 'aa',
+                    type: "checkbox"
+                }, //设置复选框
+                    {
+                        field: 'id',
+                        title: '序号',
+                        width: 80,
+                        align: 'center'
+                    }, //设置序列号
+                    {
+                        field: 'operation',
+                        title: '操作',
+                        align: 'center'
+                    },
+                    {
+                        field: 'time',
+                        title: '操作时间',
+                        align: 'center'
+                    },
+                    {
+                        field: 'userName',
+                        title: '操作者',
+                        align: 'center'
+                    }
+                ],
+            ],
+        });
+    });
+    function onFirst(){
+        location.href="/";
+    };
+    function aboutUs(){
+        layer.alert('请参考博客园https://www.cnblogs.com/kaqituolitai/',{icon:6});
+    };
+    function loginIn(){
+        location.href='/login';
+    };
+    function loginOut(){
+        location.href='/login/out';
+    };
+</script>
+</html>

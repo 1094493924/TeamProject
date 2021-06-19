@@ -1,0 +1,11 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kqtlt.mapper.OperationDao">
+    <insert id="insertOneOperation" parameterType="com.kqtlt.entity.Operation">
+        INSERT INTO `news`.`operation` (`operation`, `user_name`) VALUES (#{operation}, #{userName});
+    </insert>
+    <select id="selectAllOperation" resultType="com.kqtlt.entity.Operation">
+        SELECT * FROM `news`.`operation`;
+    </select>
+</mapper>

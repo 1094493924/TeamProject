@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>批量数据导入</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script th:src="@{/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        .title{
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            width: 95%;
+            min-height: 170px;
+            background-color: white;
+            margin: 20px;
+            font-weight: lighter;
+            padding: 20px;
+            font-size: 18px;
+        }
+        .content{
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            width: 98%;
+            min-height: 40px;
+            background-color: white;
+            margin: 20px;
+            font-weight: lighter;
+            font-size: 18px;
+            text-align: center;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div th:insert="~{single::top}"></div>
+    <div th:insert="~{single::left}"></div>
+    <div class="layui-body" style="background-color:#F7F7F7">
+        <div class="title">
+            批量数据导入：
+            <button type="button" class="layui-btn" style="width: 88%;" id="news-file-upload">
+                <i class="layui-icon">&#xe67c;</i>选择文件
+            </button><br>
+            <div style="display: inline-block;float: left;margin-top: 15px">上传进度显示：</div>
+            <div style="display: inline-block;float: left;margin-top: 17px;width: 88%">
+                <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="newsFile">
+                    <div class="layui-progress-bar" lay-percent=""></div>
+                </div>
+            </div>
+            上传新闻真实类型：
+            <button type="button" class="layui-btn" style="width: 88%;" id="news-file-type-upload">
+                <i class="layui-icon">&#xe67c;</i>选择文件
+            </button><br>
+            <div style="display: inline-block;float: left;margin-top: 15px">上传进度显示：</div>
+            <div style="display: inline-block;float: left;margin-top: 17px;width: 88%">
+                <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="newsFileType">
+                    <div class="layui-progress-bar" lay-percent=""></div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="content-show">分析结果显示</div>
+            <table id="show-result" lay-filter="result-analysis"></table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var layer;
+    layui.use(['element','upload','layer','table'], function() {
+        var element=layui.element;
+        var upload = layui.upload;
+        layer=layui.layer;
+        var table=layui.table;
+
+        var fileCount = -1;
+        //执行实例
+        upload.render({
+            elem: '#news-file-upload',     //绑定元素
+            url: '/upload/news/file', //上传接口
+            accept: 'file',           //上传支持的类型
+            before: function(obj){
+                element.progress('newsFile', '0%'); //进度条复位
+                layer.msg('上传中', {icon: 16, time: 0});
+            },
+            done: function(res) {
+                //如果上传失败
+                if(res.code > 0)
+                    return layer.msg('上传失败');
+                else{
+                    fileCount=res.count;
+                    layer.msg("请上传正确的新闻类型");
+                }
+            },
+            error: function() {
+                layer.msg("服务器异常");
+            },
+            progress: function(n, elem, e){
+                element.progress('newsFile', n + '%'); //可配合 layui 进度条元素使用
+                if(n == 100){
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+        });
+
+        //执行实例
+        upload.render({
+            elem: '#news-file-type-upload',     //绑定元素
+            url: '/upload/news/file/type', //上传接口
+            accept: 'file',           //上传支持的类型
+            before: function(obj){
+                element.progress('newsFileType', '0%'); //进度条复位
+                layer.msg('上传中', {icon: 16, time: 0});
+            },
+            done: function(res) {
+                //如果上传失败
+                if(res.code > 0)
+                    return layer.msg('上传失败');
+                else{
+                    //数据表格填值
+                    table.render({
+                        elem: '#show-result',
+                        height: 'full-20',
+                        url: '/batch/news/upload/'+res.count, //数据接口
+                        page: true,//开启分页
+                        cols: [
+                            [{field:'aa',type:"checkbox"},//设置复选框
+                                {field:'bb',type:"numbers",width:80,align: 'center'},//设置序列号
+                                {field: 'newsCategoryAnalysis', title: '分析类型',align:'center'},
+                                {field: 'newsCategoryRight', title: '正确类型',align:'center'},
+                                {field: 'newsRate', title: '正确率',align:'center'}],
+                        ],
+                    });
+                }
+            },
+            error: function() {
+                layer.msg("您需要先上传新闻文件，再上传新闻类型文件");
+            },
+            progress: function(n, elem, e){
+                element.progress('newsFileType', n + '%'); //可配合 layui 进度条元素使用
+                if(n == 100){
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+        });
+    });
+    function onFirst(){
+        location.href="/";
+    };
+    function aboutUs(){
+        layer.alert('请参考博客园https://www.cnblogs.com/kaqituolitai/',{icon:6});
+    };
+    function loginIn(){
+        location.href='/login';
+    };
+    function loginOut(){
+        location.href='/login/out';
+    };
+</script>
+</html>

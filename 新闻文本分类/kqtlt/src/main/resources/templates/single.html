@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>单条数据导入</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script th:src="@{/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        .title{
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            width: 95%;
+            height: 40px;
+            background-color: white;
+            margin: 20px;
+            font-weight: lighter;
+            padding: 20px;
+        }
+        .content{
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            width: 95%;
+            min-height: 200px;
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+        }
+        .content-table{
+            background-color: white;
+            margin-left: 20px;
+            min-height: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-row" style="background-color: white;height: 60px;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)"
+        th:fragment="top">
+        <div class="layui-col-md5">
+            <img th:src="@{/image/logo.png}" style="width: 280px;height: 40px;display: flex;margin-top:10px ;margin-left: 20%;background-color: #3c8dbc;" />
+        </div>
+        <div class="layui-col-md4">
+            <button type="button" class="layui-btn layui-btn-warm" style="margin-top: 10px;margin-right: 70px;" th:onclick="onFirst()">首&nbsp;&nbsp;&nbsp;&nbsp;页</button>
+            <button type="button" class="layui-btn layui-btn-warm" style="margin-top: 10px;" th:onclick="aboutUs()">联系我们</button>
+        </div>
+        <div class="layui-col-md3">
+            <button type="button" class="layui-btn layui-btn-normal login-button" th:onclick="loginIn()"
+                    th:if="${session.loginUser==null}" style="margin-top: 10px;">登录</button>
+            <button type="button" class="layui-btn layui-btn-normal login-button" th:onclick="loginOut()"
+                    th:if="${session.loginUser!=null}" style="margin-top: 10px;">注销</button>
+        </div>
+    </div>
+    <div class="layui-side" th:fragment="left">
+        <div class="layui-side-scroll" style="background-color: white">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" style="background-color: white;color: white;">
+                <li class="layui-nav-item">
+                    <a th:href="@{/single}" style="color: #000000;font-size: 16px;">
+                        <i class="layui-icon layui-icon-snowflake" style="font-size: 25px;color: #5FB878;"></i>
+                        单条数据导入
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a th:href="@{/batch}" style="color: #000000;font-size: 16px;">
+                        <i class="layui-icon layui-icon-note" style="font-size: 25px;color: #FFB800;"></i>
+                        批量数据导入
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a th:href="@{/statistic}" style="color: #000000;font-size: 16px;">
+                        <i class="layui-icon layui-icon-theme" style="font-size: 25px;color: #01AAED;"></i>
+                        数据分析
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a th:href="@{/operation}" style="color: #000000;font-size: 16px;">
+                        <i class="layui-icon layui-icon-template-1" style="font-size: 25px;color: #009688;"></i>
+                        操作记录
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="background-color:#F7F7F7">
+        <div class="title">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>单条数据导入</legend>
+            </fieldset>
+        </div>
+        <div class="content">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>请输入一则新闻</legend>
+            </fieldset>
+            <div class="layui-form layui-form-pane" lay-filter="example">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">新闻类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="type" value="体育" title="体育">
+                        <input type="radio" name="type" value="财经" title="财经">
+                        <input type="radio" name="type" value="房产" title="房产">
+                        <input type="radio" name="type" value="家居" title="家居">
+                        <input type="radio" name="type" value="教育" title="教育">
+                        <input type="radio" name="type" value="科技" title="科技">
+                        <input type="radio" name="type" value="时尚" title="时尚">
+                        <input type="radio" name="type" value="时政" title="时政">
+                        <input type="radio" name="type" value="游戏" title="游戏">
+                        <input type="radio" name="type" value="娱乐" title="娱乐">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">输入新闻</label>
+                    <div class="layui-input-block">
+                        <textarea name="news" placeholder="请输入一则新闻" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: center;">
+                    <button class="layui-btn layui-btn-danger layui-btn-lg"
+                            lay-submit lay-filter="newsOnForm">提交</button>
+                </div>
+            </div>
+        </div>
+        <div class="title">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>系统分析结果</legend>
+            </fieldset>
+        </div>
+        <div class="content-table">
+            <table id="show-result" lay-filter="result-analysis"></table>
+        </div>
+    </div>
+</div>
+<script>
+    var layer;
+    layui.use(['layer','form','table'], function() {
+        var form=layui.form;
+        layer=layui.layer;
+        var $=layui.jquery;
+        var table=layui.table;
+
+        form.on('submit(newsOnForm)', function (data) {
+            var req={};
+            req.news=data.field.news;
+            req.type=data.field.type;
+
+            if (req.news==""){
+                layer.msg("当前新闻没有内容，请输入内容");
+                return false;
+            }
+            if (req.type==""){
+                layer.msg("您没有选择新闻的正确类型");
+                return false;
+            }
+
+            $.ajax({
+                url:'/single/news/upload',
+                data:JSON.stringify(req),
+                contentType:'application/json;charset=UTF-8',
+                type:'post',
+                dataType: "json",
+                success:function(res){
+                    if (res.success) {
+                        layer.msg(res.data.reason);
+                        table.render({
+                            elem: '#show-result',
+                            height: 140,
+                            url: '/analysis/one/news/'+res.count, //数据接口
+                            page: true,//开启分页
+                            cols: [
+                                    [{field:'aa',type:"checkbox"},//设置复选框
+                                    {field: 'id',title:'序号',width:80,align: 'center'},//设置序列号
+                                    {field: 'newsCategoryAnalysis', title: '预测类型',align:'center'},
+                                    {field: 'newsCategoryRight', title: '正确类型',align:'center'},
+                                    {field: 'newsRightRate', title: '正确率',align:'center'}],
+                            ],
+                        });
+                    }
+                },
+                error:function(){
+                    layer.msg("一则新闻上传出错");
+                    return false;
+                }
+            })
+        });
+
+    });
+    function onFirst(){
+        location.href="/";
+    };
+    function aboutUs(){
+        layer.alert('请参考博客园https://www.cnblogs.com/kaqituolitai/',{icon:6});
+    };
+    function loginIn(){
+        location.href='/login';
+    };
+    function loginOut(){
+        location.href='/login/out';
+    };
+</script>
+</body>
+</html>

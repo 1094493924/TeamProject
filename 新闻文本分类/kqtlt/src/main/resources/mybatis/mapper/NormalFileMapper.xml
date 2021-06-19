@@ -1,0 +1,13 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kqtlt.mapper.NormalFileDao">
+    <select id="selectAllFileCount" resultType="int">
+        SELECT COUNT(*) FROM `news`.`normal_file`;
+    </select>
+
+    <insert id="insertOneNormalFile" parameterType="com.kqtlt.entity.NormalFile">
+        INSERT INTO `news`.`normal_file` (`file_id`, `file_name`, `file_size`,`file_address`,`file_content`)
+            VALUES (#{fileId},#{fileName},#{fileSize},#{fileAddress},#{fileContent});
+    </insert>
+</mapper>
