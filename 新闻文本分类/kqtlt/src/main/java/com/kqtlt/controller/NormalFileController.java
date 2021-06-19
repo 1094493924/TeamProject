@@ -87,6 +87,7 @@ public class NormalFileController {
         return json;
     }
 
+
     @RequestMapping("/upload/news/file/type")
     public JSONObject uploadNewsFile(@RequestParam("file") MultipartFile file) throws IOException {
 
